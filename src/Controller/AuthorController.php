@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Author;
+use App\Entity\Book;
 use App\Repository\AuthorRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\AuthorType;
@@ -104,6 +105,22 @@ final class AuthorController extends AbstractController
 
         return $this->redirectToRoute('author_getAuthors');
     }
+#[Route('/authors/delete-no-books', name: 'author_delete_no_books')]
+public function deleteAuthorsWithNoBooks(EntityManagerInterface $em, AuthorRepository $authorRepo): Response
+{
+    $authors = $authorRepo->findAuthorsWithNoBooks();
+    if (count($authors) === 0) {
+        $this->addFlash('info', 'No authors to delete.');
+        return $this->redirectToRoute('author_getAuthors');
+    }
+    foreach ($authors as $author) {
+        $em->remove($author);
+    }
+    $em->flush();
+
+    $this->addFlash('success', count($authors) . ' author(s) deleted.');
+    return $this->redirectToRoute('author_getAuthors');
+}
 
 
 }

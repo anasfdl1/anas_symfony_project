@@ -14,13 +14,16 @@
 		<tr>
 			<th>Nom d'utilisateur</th>
 			<th>Email</th>
+			<th>Nb_books</th>
 			<th>Actions</th> {# Nouvelle colonne #}
+
 		</tr>
 
 		{% for author in authors %}
 			<tr>
 				<td>{{ author.username }}</td>
 				<td>{{ author.email }}</td>
+				<td>{{ author.Nb_books }}</td>
 				<td>
 					<a href="{{ path('author_updateAuthor', { id: author.id }) }}">Edit</a> |
 					<a href="{{ path('author_delete', { id: author.id }) }}"

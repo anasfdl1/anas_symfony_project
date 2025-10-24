@@ -56,4 +56,13 @@ class AuthorRepository extends ServiceEntityRepository
            ->setParameter('max',$max);
            return $query->getResult();
        }
+
+public function findAuthorsWithNoBooks(): array
+{
+    return $this->createQueryBuilder('a')
+        ->where('a.nb_books = 0')
+        ->getQuery()
+        ->getResult();
+}
+
 }
