@@ -64,5 +64,20 @@ public function findAuthorsWithNoBooks(): array
         ->getQuery()
         ->getResult();
 }
+public function findByBookCountRange(?int $min, ?int $max)
+{
+    $qb = $this->createQueryBuilder('a')
+        ->leftJoin('a.books', 'b')
+        ->groupBy('a.id');
+
+    if ($min !== null) {
+        $qb->having('COUNT(b.id) >= :min')->setParameter('min', $min);
+    }
+    if ($max !== null) {
+        $qb->andHaving('COUNT(b.id) <= :max')->setParameter('max', $max);
+    }
+
+    return $qb->getQuery()->getResult(); // renvoie des Author
+}
 
 }

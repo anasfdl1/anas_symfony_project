@@ -121,6 +121,28 @@ public function deleteAuthorsWithNoBooks(EntityManagerInterface $em, AuthorRepos
     $this->addFlash('success', count($authors) . ' author(s) deleted.');
     return $this->redirectToRoute('author_getAuthors');
 }
+#[Route('/authors/search-books', name: 'author_search_books')]
+#[Route('/authors/search-books', name: 'author_search_books')]
+public function searchByBookCount(Request $req, AuthorRepository $authRepo): Response
+{
+    $form = $this->createForm(\App\Form\AuthorSearchType::class);
+    $form->handleRequest($req);
 
+    $authors = [];
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $data = $form->getData();
+        $min = $data['min'];
+        $max = $data['max'];
+
+        $authors = $authRepo->findByBookCountRange($min, $max);
+    }
+
+    return $this->render('author/list.html.twig', [
+        'form' => $form->createView(),
+        'authors' => $authors,
+        'name' => '', // ✅ Ajout ici pour éviter l'erreur Twig
+    ]);
+}
 
 }
